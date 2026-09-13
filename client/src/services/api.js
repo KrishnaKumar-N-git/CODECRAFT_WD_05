@@ -2,7 +2,14 @@ import axios from 'axios';
 
 // Dynamically select API base URL
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+  let url = import.meta.env.VITE_API_URL;
+  if (url) {
+    url = url.trim().replace(/\/+$/, '');
+    if (!url.endsWith('/api')) {
+      url = `${url}/api`;
+    }
+    return url;
+  }
   return '/api';
 };
 

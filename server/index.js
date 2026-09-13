@@ -63,19 +63,27 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Route registration
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
-app.use('/api/posts', require('./routes/posts'));
-app.use('/api/comments', require('./routes/comments'));
-app.use('/api/communities', require('./routes/communities'));
-app.use('/api/projects', require('./routes/projects'));
-app.use('/api/events', require('./routes/events'));
-app.use('/api/notifications', require('./routes/notifications'));
-app.use('/api/search', require('./routes/search'));
-app.use('/api/admin', require('./routes/admin'));
-app.use('/api/reports', require('./routes/reports'));
-app.use('/api/messages', require('./routes/messages'));
+// Route registration (with /api and fallback aliases)
+const routes = [
+  ['/auth', './routes/auth'],
+  ['/users', './routes/users'],
+  ['/posts', './routes/posts'],
+  ['/comments', './routes/comments'],
+  ['/communities', './routes/communities'],
+  ['/projects', './routes/projects'],
+  ['/events', './routes/events'],
+  ['/notifications', './routes/notifications'],
+  ['/search', './routes/search'],
+  ['/admin', './routes/admin'],
+  ['/reports', './routes/reports'],
+  ['/messages', './routes/messages'],
+];
+
+routes.forEach(([prefix, routePath]) => {
+  const handler = require(routePath);
+  app.use(`/api${prefix}`, handler);
+  app.use(prefix, handler); // fallback for requests missing /api
+});
 
 // 404 Route Handler
 app.use((req, res, next) => {
