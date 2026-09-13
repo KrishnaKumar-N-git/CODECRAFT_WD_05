@@ -129,8 +129,12 @@ const createPost = async (req, res) => {
     // Parse tags (comma-separated usernames or user IDs)
     let tagIds = [];
     if (tags) {
+      const mongoose = require('mongoose');
       const tagList = Array.isArray(tags) ? tags : [tags];
-      const taggedUsers = await User.find({ _id: { $in: tagList } }).select('_id');
+      const validObjectIds = tagList.filter(t => mongoose.Types.ObjectId.isValid(t));
+      const taggedUsers = validObjectIds.length > 0
+        ? await User.find({ _id: { $in: validObjectIds } }).select('_id')
+        : [];
       tagIds = taggedUsers.map(u => u._id);
     }
 
