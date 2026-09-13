@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
 
@@ -29,6 +30,12 @@ const sendTokenResponse = (user, statusCode, res) => {
 // POST /api/auth/register
 const register = async (req, res) => {
   try {
+    if (mongoose.connection.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database is still connecting to MongoDB Atlas. Please wait 10 seconds and try again.',
+      });
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
@@ -97,3 +104,4 @@ const getMe = async (req, res) => {
 };
 
 module.exports = { register, login, logout, getMe };
+
