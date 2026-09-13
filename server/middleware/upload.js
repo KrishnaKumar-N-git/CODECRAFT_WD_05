@@ -109,8 +109,8 @@ if (isCloudinaryConfigured) {
   const formatLocalFile = (req, file) => {
     // When saved locally, file.path is replaced or enhanced with public URL
     const host = req.get('host') || 'localhost:5000';
-    const protocol = req.protocol || 'http';
-    file.path = `${protocol}://${host}/uploads/${file.filename}`;
+    const protocol = 'https';
+    file.path = `https://${host}/uploads/${file.filename}`;
   };
 
   const wrapMulter = (multerInstance) => {

@@ -1,3 +1,11 @@
+
+const normalizeMediaUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://')) {
+    return url.replace('http://', 'https://');
+  }
+  return url;
+};
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -348,13 +356,13 @@ const PostCard = ({ post, onPostDeleted }) => {
         >
           {post.media[0].type === 'video' ? (
             <video
-              src={post.media[0].url}
+              src={normalizeMediaUrl(post.media[0].url)}
               controls
               className="w-full max-h-[580px] object-contain"
             />
           ) : (
             <img
-              src={post.media[0].url}
+              src={normalizeMediaUrl(post.media[0].url)}
               alt="Campus Post"
               className="w-full max-h-[580px] object-cover"
               loading="lazy"
